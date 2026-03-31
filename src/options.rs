@@ -70,7 +70,7 @@ pub struct SessionOptions {
 
     /// Signature type.
     ///
-    /// Default to `7`, i.e., EdDSA-SHA512-Ed25519
+    /// Defaults to `7`, i.e., EdDSA-SHA512-Ed25519
     pub signature_type: u16,
 
     /// Port where the datagram socket should be bound to.
@@ -264,8 +264,13 @@ pub struct SessionOptions {
 
     /// The encryption type to be used.
     ///
-    /// Defaults to `4`, i.e., ECIES-X25519.
-    pub lease_set_enc_type: usize,
+    /// `None` defaults to `6,4`, i.e., ML-KEM-768-x25519, x25519.
+    ///
+    /// Accepts a single value, e.g., `4` or a comma-separated list of values, e.g., `6,5,4` where
+    /// the order specifies preference.
+    ///
+    /// Note that the router may not support more than two encryption types.
+    pub lease_set_enc_type: Option<String>,
 
     /// For encrypted leasesets. Base 64 SessionKey (44 characters)
     ///
@@ -369,7 +374,7 @@ impl Default for SessionOptions {
             close_idle_time: Duration::from_millis(1800000),
             lease_set_auth_type: 0usize,
             lease_set_blinded_type: 0usize,
-            lease_set_enc_type: 4usize,
+            lease_set_enc_type: None,
             lease_set_key: None,
             lease_set_private_key: None,
             lease_set_secret: None,

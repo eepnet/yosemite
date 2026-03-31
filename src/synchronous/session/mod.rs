@@ -179,7 +179,7 @@ impl<S: SessionStyle> Session<S> {
 
     /// Send an arbitrary command to session.
     ///
-    /// Returns an unparsed response received from router.
+    /// Returns an unparsed response received from the router.
     pub fn send_command(&mut self, command: &str) -> crate::Result<String> {
         self.context.write_command(command.as_bytes())?;
         self.context.read_command()

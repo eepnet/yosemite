@@ -221,6 +221,15 @@ impl SessionController {
                     command += "i2cp.dontPublishLeaseSet=true ";
                 }
 
+                match &self.options.lease_set_enc_type {
+                    None => {
+                        command += "i2cp.leaseSetEncType=6,4 ";
+                    }
+                    Some(value) => {
+                        command += format!("i2cp.leaseSetEncType={value} ").as_str();
+                    }
+                }
+
                 command += format!(
                     "inbound.length={} inbound.quantity={} ",
                     self.options.inbound_len, self.options.inbound_quantity
@@ -233,7 +242,7 @@ impl SessionController {
                 )
                 .as_str();
 
-                command += "SIGNATURE_TYPE=7 i2cp.leaseSetEncType=4\n";
+                command += "SIGNATURE_TYPE=7\n";
 
                 Ok(command.into_bytes())
             }
