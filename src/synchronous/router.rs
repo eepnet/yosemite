@@ -31,6 +31,8 @@ use std::{io::Write, net::TcpStream};
 /// router via the default SAMV3 TCP port (7656) but this can be overridden by calling
 /// [`RouterApi::new()`] with a custom port.
 pub struct RouterApi {
+    /// SAMv3 Ip address.
+    addr: String,
     /// SAMv3 TCP port.
     port: u16,
 }
@@ -38,6 +40,7 @@ pub struct RouterApi {
 impl Default for RouterApi {
     fn default() -> Self {
         Self {
+            addr: SAMV3_IP_ADDR.to_owned(),
             port: SAMV3_TCP_PORT,
         }
     }
@@ -52,13 +55,13 @@ impl RouterApi {
     /// use yosemite::RouterApi;
     ///
     /// fn main() -> yosemite::Result<()> {
-    ///     let (destination, private_key) = RouterApi::new(8888).generate_destination()?;
+    ///     let (destination, private_key) = RouterApi::new("127.0.0.1", 8888).generate_destination()?;
     ///
     ///     Ok(())
     /// }
     /// ```
-    pub fn new(port: u16) -> Self {
-        Self { port }
+    pub fn new(addr: impl AsRef<str> + ToString, port: u16) -> Self {
+        Self { addr: addr.to_string(), port }
     }
 }
 
@@ -78,7 +81,7 @@ impl RouterApi {
     /// ```
     pub fn lookup_name(&self, name: &str) -> crate::Result<String> {
         let mut controller = RouterApiController::new();
-        let mut stream = TcpStream::connect(format!("127.0.0.1:{}", self.port))?;
+        let mut stream = TcpStream::connect(format!("{}:{}", self.addr, self.port))?;
 
         // send handhake to router
         let command = controller.handshake_router_api()?;
@@ -119,7 +122,7 @@ impl RouterApi {
     /// ```
     pub fn generate_destination(&self) -> crate::Result<(String, String)> {
         let mut controller = RouterApiController::new();
-        let mut stream = TcpStream::connect(format!("127.0.0.1:{}", self.port))?;
+        let mut stream = TcpStream::connect(format!("{}:{}", self.addr, self.port))?;
 
         // send handhake to router
         let command = controller.handshake_router_api()?;

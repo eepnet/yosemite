@@ -54,7 +54,7 @@ impl private::SessionStyle for Primary {
         async {
             Ok(Self {
                 stream: BufReader::new(
-                    TcpStream::connect(format!("127.0.0.1:{}", _options.samv3_tcp_port)).await?,
+                    TcpStream::connect(format!("{}:{}", _options.samv3_addr, _options.samv3_tcp_port)).await?,
                 ),
                 _options,
             })

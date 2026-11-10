@@ -195,7 +195,7 @@ impl Session<style::Stream> {
     ///    `lhbd7ojcaiofbfku7ixh47qj537g572zmhdc4oilvugzxdpdghua.b32.i2p/`
     ///  * base64-encoded string received from, e.g., [`Session::new()`]
     pub fn connect(&mut self, destination: &str) -> crate::Result<Stream> {
-        let mut stream = TcpStream::connect(format!("127.0.0.1:{}", self.options.samv3_tcp_port))?;
+        let mut stream = TcpStream::connect(format!("{}:{}", self.options.samv3_addr, self.options.samv3_tcp_port))?;
         let command = self.controller.handshake_stream()?;
         stream.write_all(&command)?;
 
@@ -226,7 +226,7 @@ impl Session<style::Stream> {
         destination: &str,
         options: StreamOptions,
     ) -> crate::Result<Stream> {
-        let mut stream = TcpStream::connect(format!("127.0.0.1:{}", self.options.samv3_tcp_port))?;
+        let mut stream = TcpStream::connect(format!("{}:{}", self.options.samv3_addr, self.options.samv3_tcp_port))?;
         let command = self.controller.handshake_stream()?;
         stream.write_all(&command)?;
 
@@ -246,7 +246,7 @@ impl Session<style::Stream> {
     ///
     /// The function call will fail if [`Session::forward()`] has been called before.
     pub fn accept(&mut self) -> crate::Result<Stream> {
-        let mut stream = TcpStream::connect(format!("127.0.0.1:{}", self.options.samv3_tcp_port))?;
+        let mut stream = TcpStream::connect(format!("{}:{}", self.options.samv3_addr, self.options.samv3_tcp_port))?;
         let command = self.controller.handshake_stream()?;
         stream.write_all(&command)?;
 
@@ -269,7 +269,7 @@ impl Session<style::Stream> {
     ///
     /// The function call will fail if [`Session::accept()`] has been called before.
     pub fn forward(&mut self, port: u16) -> crate::Result<()> {
-        let mut stream = TcpStream::connect(format!("127.0.0.1:{}", self.options.samv3_tcp_port))?;
+        let mut stream = TcpStream::connect(format!("{}:{}", self.options.samv3_addr, self.options.samv3_tcp_port))?;
         let command = self.controller.handshake_stream()?;
         stream.write_all(&command)?;
 

@@ -23,6 +23,9 @@ use rand::{
 
 use std::{fmt, time::Duration};
 
+/// Default IP address.
+pub(crate) const SAMV3_IP_ADDR: &'static str = "127.0.0.1";
+
 /// Default port for UDP.
 pub(crate) const SAMV3_UDP_PORT: u16 = 7655;
 
@@ -312,6 +315,11 @@ pub struct SessionOptions {
     /// Defauts to `false`.
     pub ssl: bool,
 
+    /// IP address of the listening SAMv3 server.
+    ///
+    /// Defaults to "127.0.0.1".
+    pub samv3_addr: String,
+
     /// TCP port of the listening SAMv3 server.
     ///
     /// Defaults to `7656`.
@@ -383,6 +391,7 @@ impl Default for SessionOptions {
             encrypt_lease_set: false,
             gzip: true,
             ssl: false,
+            samv3_addr: SAMV3_IP_ADDR.to_owned(),
             samv3_tcp_port: SAMV3_TCP_PORT,
             samv3_udp_port: SAMV3_UDP_PORT,
             silent_forward: false,
