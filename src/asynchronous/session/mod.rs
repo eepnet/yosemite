@@ -226,7 +226,7 @@ impl Session<style::Stream> {
     ///  * base64-encoded string received from, e.g., [`Session::new()`]
     pub async fn connect(&mut self, destination: &str) -> crate::Result<Stream> {
         let mut stream =
-            TcpStream::connect(format!("127.0.0.1:{}", self.options.samv3_tcp_port)).await?;
+            TcpStream::connect(format!("{}:{}", self.options.samv3_addr, self.options.samv3_tcp_port)).await?;
         let command = self.controller.handshake_stream()?;
         stream.write_all(&command).await?;
 
@@ -258,7 +258,7 @@ impl Session<style::Stream> {
         options: StreamOptions,
     ) -> crate::Result<Stream> {
         let mut stream =
-            TcpStream::connect(format!("127.0.0.1:{}", self.options.samv3_tcp_port)).await?;
+            TcpStream::connect(format!("{}:{}", self.options.samv3_addr, self.options.samv3_tcp_port)).await?;
         let command = self.controller.handshake_stream()?;
         stream.write_all(&command).await?;
 
@@ -280,11 +280,12 @@ impl Session<style::Stream> {
         destination: &str,
     ) -> impl std::future::Future<Output = crate::Result<Stream>> {
         let mut controller = self.controller.clone();
+        let sam_addr = self.options.samv3_addr;
         let sam_tcp_port = self.options.samv3_tcp_port;
         let destination = destination.to_owned();
 
         async move {
-            let mut stream = TcpStream::connect(format!("127.0.0.1:{}", sam_tcp_port)).await?;
+            let mut stream = TcpStream::connect(format!("{}:{}", sam_addr, sam_tcp_port)).await?;
 
             let command = controller.handshake_stream()?;
             stream.write_all(&command).await?;
@@ -309,11 +310,12 @@ impl Session<style::Stream> {
         options: StreamOptions,
     ) -> impl std::future::Future<Output = crate::Result<Stream>> {
         let mut controller = self.controller.clone();
+        let sam_addr = self.options.samv3_addr;
         let sam_tcp_port = self.options.samv3_tcp_port;
         let destination = destination.to_owned();
 
         async move {
-            let mut stream = TcpStream::connect(format!("127.0.0.1:{}", sam_tcp_port)).await?;
+            let mut stream = TcpStream::connect(format!("{}:{}", sam_addr, sam_tcp_port)).await?;
 
             let command = controller.handshake_stream()?;
             stream.write_all(&command).await?;
@@ -336,7 +338,7 @@ impl Session<style::Stream> {
     /// The function call will fail if [`Session::forward()`] has been called before.
     pub async fn accept(&mut self) -> crate::Result<Stream> {
         let mut stream =
-            TcpStream::connect(format!("127.0.0.1:{}", self.options.samv3_tcp_port)).await?;
+            TcpStream::connect(format!("{}:{}", self.options.samv3_addr, self.options.samv3_tcp_port)).await?;
         let command = self.controller.handshake_stream()?;
         stream.write_all(&command).await?;
 
@@ -360,7 +362,7 @@ impl Session<style::Stream> {
     /// The function call will fail if [`Session::accept()`] has been called before.
     pub async fn forward(&mut self, port: u16) -> crate::Result<()> {
         let mut stream =
-            TcpStream::connect(format!("127.0.0.1:{}", self.options.samv3_tcp_port)).await?;
+            TcpStream::connect(format!("{}:{}", self.options.samv3_addr, self.options.samv3_tcp_port)).await?;
         let command = self.controller.handshake_stream()?;
         stream.write_all(&command).await?;
 

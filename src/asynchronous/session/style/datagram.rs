@@ -128,12 +128,12 @@ impl private::SessionStyle for Repliable {
         Self: Sized,
     {
         async {
-            let socket = UdpSocket::bind(format!("127.0.0.1:{}", options.datagram_port)).await?;
+            let socket = UdpSocket::bind(format!("{}:{}", options.samv3_addr, options.datagram_port)).await?;
             let stream = BufReader::new(
-                TcpStream::connect(format!("127.0.0.1:{}", options.samv3_tcp_port)).await?,
+                TcpStream::connect(format!("{}:{}", options.samv3_addr, options.samv3_tcp_port)).await?,
             );
             let server_address =
-                format!("127.0.0.1:{}", options.samv3_udp_port).parse().expect("to succeed");
+                format!("{}:{}", options.samv3_addr, options.samv3_udp_port).parse().expect("to succeed");
 
             Ok(Self {
                 buffer: vec![0u8; 0xfff],
@@ -168,12 +168,13 @@ impl private::SessionStyle for Repliable {
 
     fn create_session(&self) -> private::SessionParameters {
         let port = self.socket.local_addr().expect("to succeed").port();
+        let addr = self.socket.local_addr().expect("to succeed").ip();
 
         private::SessionParameters {
             style: "DATAGRAM".to_string(),
             options: Vec::from_iter([
                 ("PORT".to_string(), port.to_string()),
-                ("HOST".to_string(), "127.0.0.1".to_string()),
+                ("HOST".to_string(), addr.to_string()),
             ]),
         }
     }
@@ -187,9 +188,9 @@ impl private::Subsession for Repliable {
         Self: Sized,
     {
         async {
-            let socket = UdpSocket::bind(format!("127.0.0.1:{}", options.datagram_port)).await?;
+            let socket = UdpSocket::bind(format!("{}:{}", options.samv3_addr, options.datagram_port)).await?;
             let server_address =
-                format!("127.0.0.1:{}", options.samv3_udp_port).parse().expect("to succeed");
+                format!("{}:{}", options.samv3_addr, options.samv3_udp_port).parse().expect("to succeed");
 
             Ok(Self {
                 buffer: vec![0u8; 0xfff],
@@ -273,12 +274,12 @@ impl private::SessionStyle for Anonymous {
         Self: Sized,
     {
         async {
-            let socket = UdpSocket::bind(format!("127.0.0.1:{}", options.datagram_port)).await?;
+            let socket = UdpSocket::bind(format!("{}:{}", options.samv3_addr, options.datagram_port)).await?;
             let stream = BufReader::new(
-                TcpStream::connect(format!("127.0.0.1:{}", options.samv3_tcp_port)).await?,
+                TcpStream::connect(format!("{}:{}", options.samv3_addr, options.samv3_tcp_port)).await?,
             );
             let server_address =
-                format!("127.0.0.1:{}", options.samv3_udp_port).parse().expect("to succeed");
+                format!("{}:{}", options.samv3_addr, options.samv3_udp_port).parse().expect("to succeed");
 
             Ok(Self {
                 options,
@@ -313,12 +314,13 @@ impl private::SessionStyle for Anonymous {
 
     fn create_session(&self) -> private::SessionParameters {
         let port = self.socket.local_addr().expect("to succeed").port();
+        let addr = self.socket.local_addr().expect("to succeed").ip();
 
         private::SessionParameters {
             style: "RAW".to_string(),
             options: Vec::from_iter([
                 ("PORT".to_string(), port.to_string()),
-                ("HOST".to_string(), "127.0.0.1".to_string()),
+                ("HOST".to_string(), addr.to_string()),
             ]),
         }
     }
@@ -332,9 +334,9 @@ impl private::Subsession for Anonymous {
         Self: Sized,
     {
         async {
-            let socket = UdpSocket::bind(format!("127.0.0.1:{}", options.datagram_port)).await?;
+            let socket = UdpSocket::bind(format!("{}:{}", options.samv3_addr, options.datagram_port)).await?;
             let server_address =
-                format!("127.0.0.1:{}", options.samv3_udp_port).parse().expect("to succeed");
+                format!("{}:{}", options.samv3_addr, options.samv3_udp_port).parse().expect("to succeed");
 
             Ok(Self {
                 options,

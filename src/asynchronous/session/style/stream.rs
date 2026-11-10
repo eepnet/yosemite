@@ -66,7 +66,7 @@ impl private::SessionStyle for Stream {
         async {
             Ok(Self {
                 stream: Some(BufReader::new(
-                    TcpStream::connect(format!("127.0.0.1:{}", _options.samv3_tcp_port)).await?,
+                    TcpStream::connect(format!("{}:{}", _options.samv3_addr, _options.samv3_tcp_port)).await?,
                 )),
                 _options,
                 _forwarding_stream: None,
